@@ -80,7 +80,16 @@ glm::vec3 trace(Ray ray, int step)
     Ray shadowRay(ray.hit, lightVec);
     shadowRay.closestPt(sceneObjects);
     float lightDist = glm::length(lightVec);
-    if (shadowRay.index > -1 && shadowRay.dist < lightDist) color = ambientCol * obj->getColor();
+    if (shadowRay.index > -1 && shadowRay.dist < lightDist)
+    {
+        //TODO FIx this so lighted shadow based on refractive and transparent coeffs
+        if (obj->isRefractive() || obj->isTransparent()) {
+            float coeff = 1.5;
+            color = (coeff * ambientCol) * obj->getColor();
+        } else {
+            color = ambientCol * obj->getColor();
+        }
+    }
 
     if (obj->isReflective() && step < MAX_STEPS)
     {
@@ -107,8 +116,9 @@ glm::vec3 trace(Ray ray, int step)
     }
     if (obj->isTransparent() && step < MAX_STEPS)
     {
+        Ray transRay(ray.hit, ray.dir);
         float transCoeff = obj->getTransparencyCoeff();
-        glm::vec3 transparentCol = trace(ray, step + 1);
+        glm::vec3 transparentCol = trace(transRay, step + 1);
         color = color + (transCoeff * transparentCol);
     }
     float t = (ray.hit.z - FOG_RANGE[0]) / (FOG_RANGE[1] - FOG_RANGE[0]);
@@ -289,7 +299,7 @@ void initialize()
     sceneObjects.push_back(cylinder1);		 //Add sphere to scene objects
 
     //Cyan sphere
-    Sphere *sphere3 = new Sphere(glm::vec3(0.0, -11.0, -70.0), 4.0);
+    Sphere *sphere3 = new Sphere(glm::vec3(0.0, 0.0, -70.0), 4.0);
     sphere3->setColor(glm::vec3(0, 1, 1));
 //    sphere2->setShininess(5);
     sphere3->setTransparency(true, 1);
