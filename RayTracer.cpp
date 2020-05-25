@@ -83,12 +83,14 @@ glm::vec3 trace(Ray ray, int step)
     if (shadowRay.index > -1 && shadowRay.dist < lightDist)
     {
         //TODO FIx this so lighted shadow based on refractive and transparent coeffs
-        if (obj->isRefractive() || obj->isTransparent()) {
-            float coeff = 1.5;
-            color = (coeff * ambientCol) * obj->getColor();
-        } else {
+//        if (obj->isRefractive() || obj->isTransparent()) {
+//            float coeff = 0.5;
+//            glm::vec3 ambientCol1(0.4);
+//            color = ambientCol1 * obj->getColor();
+//            color = (coeff * ambientCol) * obj->getColor();
+//        } else {
             color = ambientCol * obj->getColor();
-        }
+//        }
     }
 
     if (obj->isReflective() && step < MAX_STEPS)
@@ -229,7 +231,7 @@ void initialize()
     sceneObjects.push_back(sphere1);		 //Add sphere to scene objects
 
     //Cyan sphere
-    Sphere *sphere2 = new Sphere(glm::vec3(5.0, -11.0, -110.0), 4.0);
+    Sphere *sphere2 = new Sphere(glm::vec3(5.0, -11.0, -80.0), 4.0);
     sphere2->setColor(glm::vec3(0, 1, 1));
 //    sphere2->setShininess(5);
     sphere2->setRefractivity(true, 1.01, 0);
@@ -244,62 +246,45 @@ void initialize()
     sceneObjects.push_back(plane);
 
     //Octahedron
-    Plane *pyramid_front = new Plane(glm::vec3(-10.0, 0.0, -60.0),
-                                     glm::vec3(0.0, 0.0, -60.0),
-                                     glm::vec3(-5.0, 10.0, -65.0));
+    Plane *pyramid_front = new Plane(glm::vec3(7.0, -5.0, -67.0),
+                                     glm::vec3(13.0, -5.0, -67.0),
+                                     glm::vec3(10.0, 0.0, -70.0));
     pyramid_front->setColor(glm::vec3(1, 0, 0));
     sceneObjects.push_back(pyramid_front);
 
-    Plane *pyramid_left = new Plane(glm::vec3(-10.0, 0.0, -70.0),
-                                     glm::vec3(-10.0, 0.0, -60.0),
-                                     glm::vec3(-5.0, 10.0, -65.0));
+    Plane *pyramid_left = new Plane(glm::vec3(7.0, -5.0, -73.0),
+                                     glm::vec3(7.0, -5.0, -67.0),
+                                     glm::vec3(10.0, 0.0, -70.0));
     pyramid_left->setColor(glm::vec3(1, 0, 0));
     sceneObjects.push_back(pyramid_left);
 
-    Plane *pyramid_back = new Plane(glm::vec3(0.0, 0.0, -70.0),
-                                     glm::vec3(-10.0, 0.0, -70.0),
-                                     glm::vec3(-5.0, 10.0, -65.0));
+    Plane *pyramid_back = new Plane(glm::vec3(13.0, -5.0, -73.0),
+                                     glm::vec3(7.0, -5.0, -73.0),
+                                     glm::vec3(10.0, 0.0, -70.0));
     pyramid_back->setColor(glm::vec3(1, 0, 0));
     sceneObjects.push_back(pyramid_back);
 
-    Plane *pyramid_right = new Plane(glm::vec3(0.0, 0.0, -60.0),
-                                     glm::vec3(0.0, 0.0, -70.0),
-                                     glm::vec3(-5.0, 10.0, -65.0));
+    Plane *pyramid_right = new Plane(glm::vec3(13.0, -5.0, -67.0),
+                                     glm::vec3(13.0, -5.0, -73.0),
+                                     glm::vec3(10.0, 0.0, -70.0));
     pyramid_right->setColor(glm::vec3(1, 0, 0));
     sceneObjects.push_back(pyramid_right);
 
-    Plane *pyramid_front_bottom = new Plane(glm::vec3(0.0, 0.0, -60.0),
-                                     glm::vec3(-10.0, 0.0, -60.0),
-                                     glm::vec3(-5.0, -10.0, -65.0));
-    pyramid_front_bottom->setColor(glm::vec3(1, 0, 0));
-    sceneObjects.push_back(pyramid_front_bottom);
-
-    Plane *pyramid_left_bottom = new Plane(glm::vec3(-10.0, 0.0, -60.0),
-                                     glm::vec3(-10.0, 0.0, -70.0),
-                                     glm::vec3(-5.0, -10.0, -65.0));
-    pyramid_left_bottom->setColor(glm::vec3(1, 0, 0));
-    sceneObjects.push_back(pyramid_left_bottom);
-
-    Plane *pyramid_back_bottom = new Plane(glm::vec3(-10.0, 0.0, -70.0),
-                                     glm::vec3(0.0, 0.0, -70.0),
-                                     glm::vec3(-5.0, -10.0, -65.0));
-    pyramid_back_bottom->setColor(glm::vec3(1, 0, 0));
-    sceneObjects.push_back(pyramid_back_bottom);
-
-    Plane *pyramid_right_bottom = new Plane(glm::vec3(0.0, 0.0, -70.0),
-                                     glm::vec3(0.0, 0.0, -60.0),
-                                     glm::vec3(-5.0, -10.0, -65.0));
-    pyramid_right_bottom->setColor(glm::vec3(1, 0, 0));
-    sceneObjects.push_back(pyramid_right_bottom);
+    Plane *pyramid_base = new Plane(glm::vec3(13.0, -5.0, -67.0),
+                                   glm::vec3(7.0,  -5.0, -67.0),
+                                   glm::vec3(7.0,  -5.0, -73.0),
+                                   glm::vec3(13.0, -5.0, -73.0));
+    pyramid_base->setColor(glm::vec3(1, 0, 0));
+    sceneObjects.push_back(pyramid_base);
 
     //Blue cylinder
-    Cylinder *cylinder1 = new Cylinder(glm::vec3(15.0, -15.0, -70.0), 5.0, 5.0);
+    Cylinder *cylinder1 = new Cylinder(glm::vec3(10.0, -15.0, -70.0), 2.0, 10.0);
     cylinder1->setColor(glm::vec3(0, 0, 1));   //Set colour to blue
-//    cylinder1->setReflectivity(true, 0.8);
+    cylinder1->setShininess(5);
     sceneObjects.push_back(cylinder1);		 //Add sphere to scene objects
 
     //Cyan sphere
-    Sphere *sphere3 = new Sphere(glm::vec3(0.0, 0.0, -70.0), 4.0);
+    Sphere *sphere3 = new Sphere(glm::vec3(0.0, -11.0, -60.0), 4.0);
     sphere3->setColor(glm::vec3(0, 1, 1));
 //    sphere2->setShininess(5);
     sphere3->setTransparency(true, 1);
